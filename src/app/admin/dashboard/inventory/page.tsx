@@ -1,0 +1,1 @@
+'use client'; import {InventoryManager} from '@/components/admin/InventoryManager'; export default function InventoryAdmin(){return <div><div className="mb-7"><p className="text-xs font-black uppercase tracking-[.2em] text-amber-700">Yard stock</p><h1 className="mt-1 text-3xl font-black">Inventory management</h1></div><InventoryManager/></div>}

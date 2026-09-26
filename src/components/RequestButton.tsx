@@ -1,0 +1,2 @@
+'use client'; import {useState} from 'react'; import type {Part} from '@/types/api'; import {QuoteModal} from './QuoteModal';
+export function RequestButton({part}:{part:Part}){const [open,setOpen]=useState(false);return <>{<button onClick={()=>setOpen(true)} className="focus-ring min-h-12 bg-[#d97706] px-5 font-black text-white">Request This Part</button>}{open&&<QuoteModal part={part} onClose={()=>setOpen(false)}/>}</>}

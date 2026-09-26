@@ -1,0 +1,17 @@
+export type ConditionGrade = 'GRADE_A' | 'GRADE_B' | 'OEM_USED';
+export type ContactPreference = 'WHATSAPP' | 'EMAIL' | 'PHONE_CALL';
+export type QuoteStatus = 'PENDING' | 'CONTACTED' | 'FULFILLED' | 'CLOSED';
+export type ContactStatus = 'NEW' | 'READ' | 'RESPONDED' | 'CLOSED';
+export type EmailNotificationStatus = 'PENDING' | 'SENT' | 'FAILED';
+export type Category = { id:string; name:string; slug:string; description:string|null; createdAt:string; updatedAt:string };
+export type Vehicle = { id:string; make:string; model:string; yearStart:number; yearEnd:number|null; generation:string|null; notes:string|null; createdAt:string; updatedAt:string };
+export type Image = { id:string; url:string; width:number|null; height:number|null; fileSize:number|null; sortOrder:number; isPrimary:boolean; altText:string|null };
+export type Part = { id:string; title:string; sku:string; categoryId:string; conditionGrade:ConditionGrade; price:string|null; isQuoteOnly:boolean; inStock:boolean; isArchived:boolean; yardLocation:string|null; description:string|null; createdAt:string; updatedAt:string; archivedAt:string|null; category?:Category|null; vehicles?:Vehicle[]; images?:Image[] };
+export type ApiError = { code?:string; message:string; details?:unknown };
+export type ApiEnvelope<T> = { success:boolean; data:T; meta?:unknown; error?:ApiError };
+export type Paginated<T> = { data:T[]; meta:{page:number;limit:number;total:number;totalPages:number} };
+export type VinDecode = { vin:string; make:string|null; model:string|null; year:number|null; engineSize:string|null };
+export type Quote = { id:string; referenceNumber:string; customerName:string; customerPhone:string; customerEmail:string|null; vinNumber:string|null; vehicleDetails:Record<string,unknown>|null; partsList:unknown[]; contactPreference:ContactPreference; notes:string|null; status:QuoteStatus; emailNotificationStatus:EmailNotificationStatus; emailNotificationError:string|null; createdAt:string; updatedAt:string; contactedAt:string|null; fulfilledAt:string|null; closedAt:string|null; attachments:{id:string;fileName:string;mimeType:string;fileSize:number;createdAt:string}[] };
+export type ContactMessage = { id:string; name:string; email:string|null; phone:string|null; subject:string|null; message:string; status:ContactStatus; createdAt:string; updatedAt:string };
+export type AdminUser = { id:string; email:string; role:'ADMIN' };
+export type LoginResult = { token:string; expiresIn:string; user:AdminUser };

@@ -1,0 +1,34 @@
+@import "tailwindcss";
+:root{--ink:#111827;--bg:#f3f4f6;--card:#fff;--border:#e5e7eb;--accent:#d97706}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{margin:0;background:var(--bg);color:#111827;font-family:Arial,Helvetica,sans-serif;overflow-x:clip}
+button,input,select,textarea{font:inherit}
+button,a{touch-action:manipulation}
+img{max-width:100%}
+.focus-ring:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
+@keyframes motherland-fade-up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes motherland-drawer{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:translateX(0)}}
+.motion-fade-up{animation:motherland-fade-up .42s ease-out both}
+.motion-delay-1{animation-delay:.08s}
+.motion-drawer{animation:motherland-drawer .2s ease-out both}
+.motion-card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.motion-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(17,24,39,.08);border-color:#d1d5db}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.motion-fade-up,.motion-drawer{animation:none}.motion-card{transition:none}.motion-card:hover{transform:none;box-shadow:none}}
+
+
+/* MOTHERLAND_MOTION_V2 */
+@media (prefers-reduced-motion: no-preference) {
+  .motion-card {
+    transition: transform 160ms ease, box-shadow 160ms ease;
+  }
+  .motion-card:hover {
+    transform: translateY(-2px);
+  }
+  .motion-button {
+    transition: transform 120ms ease, opacity 120ms ease;
+  }
+  .motion-button:active {
+    transform: translateY(1px);
+  }
+}
