@@ -1,4 +1,5 @@
 import type {Metadata} from 'next'; import './globals.css'; import {Header} from '@/components/Header'; import {Footer} from '@/components/Footer';
+import BackToTop from "@/components/BackToTop";
 export const metadata:Metadata={title:{default:'Motherland Auto Parts | Used Foreign Auto Parts in Lithonia, GA',template:'%s | Motherland Auto Parts'},description:'Used foreign auto parts and salvage inventory serving Metro-Atlanta from Lithonia, Georgia.',metadataBase:new URL(process.env.NEXT_PUBLIC_SITE_URL||'http://localhost:3000'),
   icons: {
     icon: '/icon.svg',
@@ -29,4 +30,6 @@ export const metadata:Metadata={title:{default:'Motherland Auto Parts | Used For
     description: 'Used foreign auto parts and salvage inventory serving Metro Atlanta from Lithonia, Georgia.',
   },
 };
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body><Header/>{children}<Footer/></body></html>}
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body><Header/>{children}<Footer/>      
+          <BackToTop />
+    </body></html>}
