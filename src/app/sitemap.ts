@@ -7,5 +7,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: siteUrl, changeFrequency: 'weekly', priority: 1 },
     { url: `${siteUrl}/inventory`, changeFrequency: 'daily', priority: 0.9 },
     { url: `${siteUrl}/contact`, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${siteUrl}/about`, changeFrequency: 'monthly', priority: 0.6 },
   ];
 }
