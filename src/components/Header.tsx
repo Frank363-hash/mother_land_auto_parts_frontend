@@ -7,6 +7,7 @@ import { useState } from 'react';
 const links = [
   { href: '/inventory', label: 'Inventory' },
   { href: '/about', label: 'About' },
+  { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'Contact' },
 ];
 
@@ -17,7 +18,7 @@ export function Header() {
     <>
       <div className="bg-[#111827] text-white">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-2 text-xs">
-          <span className="flex items-center gap-2"><MapPin size={14} />2182 Coffee Road, Suite G, Lithonia, GA 30058</span>
+          <span className="hidden items-center gap-2 sm:flex"><MapPin size={14} />2182 Coffee Road, Suite G, Lithonia, GA 30058</span><span className="flex items-center gap-2 sm:hidden"><MapPin size={14} />Lithonia, GA</span>
           <span className="flex items-center gap-4">
             <a className="focus-ring flex items-center gap-1 font-bold" href="tel:+16785803666"><Phone size={14} />678-580-3666</a>
             <span className="hidden sm:inline">Call for current yard hours</span>

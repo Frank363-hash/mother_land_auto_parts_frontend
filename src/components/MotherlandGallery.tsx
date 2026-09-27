@@ -16,7 +16,7 @@ const images = [
 
 export function MotherlandGallery() {
   const [index, setIndex] = useState(0);
-  useEffect(() => { const id = window.setInterval(() => setIndex((i) => (i + 1) % images.length), 5500); return () => window.clearInterval(id); }, []);
+  useEffect(() => { const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; if (reduced) return; const id = window.setInterval(() => setIndex((i) => (i + 1) % images.length), 5500); return () => window.clearInterval(id); }, []);
   const move = (delta: number) => setIndex((i) => (i + delta + images.length) % images.length);
   const [src, alt] = images[index];
 

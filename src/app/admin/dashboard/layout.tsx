@@ -3,17 +3,19 @@
 import Link from 'next/link';
 import {useEffect,useState} from 'react';
 import {usePathname,useRouter} from 'next/navigation';
-import {LayoutDashboard,Package,Inbox,LogOut,Menu,X,ChevronRight} from 'lucide-react';
+import {LayoutDashboard,Package,Inbox,Archive,LogOut,Menu,X,ChevronRight} from 'lucide-react';
 
 const navItems=[
   {href:'/admin/dashboard',label:'Overview',icon:<LayoutDashboard size={17}/>},
   {href:'/admin/dashboard/inventory',label:'Inventory',icon:<Package size={17}/>},
+  {href:'/admin/dashboard/inventory/archive',label:'Archive',icon:<Archive size={17}/>},
   {href:'/admin/dashboard/quotes',label:'Quotes',icon:<Inbox size={17}/>},
 ];
 
 export default function AdminLayout({children}:{children:React.ReactNode}){
   const path=usePathname(),router=useRouter();
   const [open,setOpen]=useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(()=>{setOpen(false)},[path]);
   useEffect(()=>{
     if(!open) return;
@@ -35,4 +37,4 @@ export default function AdminLayout({children}:{children:React.ReactNode}){
     {open&&<div className="fixed inset-0 z-[70] lg:hidden" role="dialog" aria-modal="true" aria-label="Admin navigation"><button type="button" aria-label="Close admin menu" onClick={()=>setOpen(false)} className="absolute inset-0 bg-black/60"/><aside className="absolute left-0 top-0 flex h-full w-[min(84vw,320px)] flex-col bg-[#111827] p-4 text-white shadow-2xl motion-drawer"><div className="mb-6 flex items-center justify-between"><div><div className="text-lg font-black">YARD ADMIN</div><div className="text-[10px] font-bold uppercase tracking-[.16em] text-gray-400">Operations</div></div><button type="button" onClick={()=>setOpen(false)} aria-label="Close admin menu" className="focus-ring grid min-h-11 min-w-11 place-items-center border border-white/15"><X size={19}/></button></div><AdminNav path={path} onNavigate={()=>setOpen(false)}/><button onClick={logout} className="mt-auto flex min-h-11 w-full items-center gap-2 border border-white/10 px-3 text-sm font-bold"><LogOut size={17}/>Sign out</button></aside></div>}
   </div>
 }
-function AdminNav({path,onNavigate}:{path:string;onNavigate:()=>void}){return <nav className="grid gap-1">{navItems.map(item=><Link key={item.href} href={item.href} onClick={onNavigate} className={`flex min-h-12 items-center justify-between gap-2 px-3 text-sm font-bold transition-colors ${path===item.href||path.startsWith(item.href+'/')?'bg-[#d97706]':'hover:bg-white/10'}`}><span className="flex items-center gap-2">{item.icon}{item.label}</span><ChevronRight size={15} className="opacity-50"/></Link>)}</nav>}
+function AdminNav({path,onNavigate}:{path:string;onNavigate:()=>void}){return <nav className="grid gap-1">{navItems.map(item=><Link key={item.href} href={item.href} onClick={onNavigate} className={`flex min-h-12 items-center justify-between gap-2 px-3 text-sm font-bold transition-colors ${path===item.href?'bg-[#d97706]':'hover:bg-white/10'}`}><span className="flex items-center gap-2">{item.icon}{item.label}</span><ChevronRight size={15} className="opacity-50"/></Link>)}</nav>}

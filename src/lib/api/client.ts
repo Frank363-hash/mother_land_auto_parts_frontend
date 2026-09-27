@@ -36,6 +36,17 @@ async function requestPaginated<T>(path:string, init:RequestInit = {}, token?:st
   return {data:body.data,meta:body.meta as Paginated<T>['meta']};
 }
 
+function normalizeAdminInventory(parts:Part[]):Part[]{
+  const mediaBase=BASE.replace(/\/api\/v1$/,'');
+  return parts.map(part=>({
+    ...part,
+    images:part.images?.map(image=>({
+      ...image,
+      url:image.url || `${mediaBase}/api/v1/media/inventory/parts/${part.id}/images/${image.id}`,
+    })),
+  }));
+}
+
 export const api = {
   inventory: {
     search: (params:URLSearchParams)=>requestPaginated<Part>(`/inventory/search?${params.toString()}`),
@@ -52,7 +63,7 @@ export const api = {
   contact: (body:Record<string,unknown>)=>request<ContactMessage>('/contact',{method:'POST',body:JSON.stringify(body)}),
   admin: {
     login:(body:{email:string;password:string})=>request<LoginResult>('/admin/auth/login',{method:'POST',body:JSON.stringify(body)}),
-    inventory:()=>sameOriginRequest<Part[]>('/api/admin/inventory',{}),
+    inventory:()=>sameOriginRequest<Part[]>('/api/admin/inventory',{}).then(normalizeAdminInventory),
     createInventory:(form:FormData)=>sameOriginRequest<Part>('/api/admin/inventory',{method:'POST',body:form}),
     updateInventory:(id:string,body:Record<string,unknown>)=>sameOriginRequest<Part>(`/api/admin/inventory/${id}`,{method:'PUT',body:JSON.stringify(body)}),
     archiveInventory:(id:string)=>sameOriginRequest<{id:string;archived:boolean}>(`/api/admin/inventory/${id}`,{method:'DELETE'}),

@@ -32,6 +32,7 @@ export function Footer() {
         <a href="tel:+16785803666" className="mt-3 flex min-h-11 items-center gap-2 text-sm hover:text-amber-400"><Phone size={17} />678-580-3666</a>
         <div className="mt-2 flex flex-wrap gap-4 text-sm">
           <Link href="/about" className="hover:text-amber-400">About →</Link>
+          <Link href="/faq" className="hover:text-amber-400">FAQ →</Link>
           <Link href="/contact" className="hover:text-amber-400">Contact the yard →</Link>
         </div>
       </div>
