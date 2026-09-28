@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Phone, MapPin } from 'lucide-react';
+import { SocialLinks } from '@/components/SocialLinks';
 
 export function Footer() {
   return <footer className="bg-white text-gray-600">
@@ -29,7 +30,9 @@ export function Footer() {
         <h2 className="font-bold text-[#111827]">Contact</h2>
         <a href="tel:+16785803666" className="mt-3 flex min-h-11 items-center gap-2 text-sm text-[#111827] hover:text-amber-600"><Phone size={17} />678-580-3666</a>
         <div className="mt-2 flex flex-wrap gap-4 text-sm text-[#111827]">
-          <Link href="/about" className="hover:text-amber-400">About →</Link>
+          <SocialLinks className="mt-5" />
+        <p className="mt-2 text-xs text-gray-400">Follow MotherLand Auto Parts on social media.</p>
+        <Link href="/about" className="hover:text-amber-400">About →</Link>
           <Link href="/faq" className="hover:text-amber-400">FAQ →</Link>
           <Link href="/contact" className="hover:text-amber-400">Contact the yard →</Link>
         </div>

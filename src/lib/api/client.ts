@@ -67,6 +67,9 @@ export const api = {
     createInventory:(form:FormData)=>sameOriginRequest<Part>('/api/admin/inventory',{method:'POST',body:form}),
     updateInventory:(id:string,body:Record<string,unknown>)=>sameOriginRequest<Part>(`/api/admin/inventory/${id}`,{method:'PUT',body:JSON.stringify(body)}),
     archiveInventory:(id:string)=>sameOriginRequest<{id:string;archived:boolean}>(`/api/admin/inventory/${id}`,{method:'DELETE'}),
+    restoreInventory:(id:string)=>sameOriginRequest<{id:string;restored:boolean;isArchived:boolean;inStock:boolean}>(`/api/admin/inventory/${id}/restore`,{method:'PATCH'}),
+    permanentDeleteInventory:(id:string)=>sameOriginRequest<{id:string;deleted:boolean;imageFilesRequested:number;imageFilesFailed:number}>(`/api/admin/inventory/${id}/permanent`,{method:'DELETE'}),
+
     uploadImages:(id:string,form:FormData)=>sameOriginRequest<unknown>(`/api/admin/inventory/${id}/images`,{method:'POST',body:form}),
     deleteImage:(id:string,imageId:string)=>sameOriginRequest<unknown>(`/api/admin/inventory/${id}/images/${imageId}`,{method:'DELETE'}),
     setPrimary:(id:string,imageId:string)=>sameOriginRequest<unknown>(`/api/admin/inventory/${id}/images/${imageId}/primary`,{method:'PATCH'}),
