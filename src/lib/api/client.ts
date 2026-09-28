@@ -74,8 +74,11 @@ export const api = {
     deleteImage:(id:string,imageId:string)=>sameOriginRequest<unknown>(`/api/admin/inventory/${id}/images/${imageId}`,{method:'DELETE'}),
     setPrimary:(id:string,imageId:string)=>sameOriginRequest<unknown>(`/api/admin/inventory/${id}/images/${imageId}/primary`,{method:'PATCH'}),
     reorderImages:(id:string,imageIds:string[])=>sameOriginRequest<unknown>(`/api/admin/inventory/${id}/images/reorder`,{method:'PATCH',body:JSON.stringify({imageIds})}),
-    quotes:()=>sameOriginRequest<Quote[]>('/api/admin/quotes',{}),
+    quotes:(includeHidden=false)=>sameOriginRequest<Quote[]>(`/api/admin/quotes${includeHidden?'?includeHidden=true':''}`,{}),
     updateQuote:(id:string,status:Quote['status'])=>sameOriginRequest<Quote>(`/api/admin/quotes/${id}`,{method:'PATCH',body:JSON.stringify({status})}),
+    hideQuote:(id:string)=>sameOriginRequest<Quote>(`/api/admin/quotes/${id}/hide`,{method:'PATCH'}),
+    unhideQuote:(id:string)=>sameOriginRequest<Quote>(`/api/admin/quotes/${id}/unhide`,{method:'PATCH'}),
+    permanentlyDeleteQuote:(id:string)=>sameOriginRequest<{id:string;deleted:boolean;attachmentFilesRequested:number;attachmentFilesFailed:number}>(`/api/admin/quotes/${id}/permanent`,{method:'DELETE'}),
     contacts:()=>sameOriginRequest<ContactMessage[]>('/api/admin/contacts',{}),
     attachmentUrl:(quoteId:string,attachmentId:string)=>`/api/admin/quotes/${quoteId}/attachments/${attachmentId}`,
   }

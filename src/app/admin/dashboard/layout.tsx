@@ -9,7 +9,7 @@ const navItems=[
   {href:'/admin/dashboard',label:'Overview',icon:<LayoutDashboard size={17}/>},
   {href:'/admin/dashboard/inventory',label:'Inventory',icon:<Package size={17}/>},
   {href:'/admin/dashboard/inventory/archive',label:'Archive',icon:<Archive size={17}/>},
-  {href:'/admin/dashboard/quotes',label:'Quotes',icon:<Inbox size={17}/>},
+  {href:'/admin/dashboard/quotes',label:'Customer Requests',icon:<Inbox size={17}/>},
 ];
 
 export default function AdminLayout({children}:{children:React.ReactNode}){
