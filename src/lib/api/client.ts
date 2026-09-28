@@ -1,4 +1,4 @@
-import type { ApiEnvelope, Category, ContactMessage, LoginResult, Paginated, Part, Quote, VinDecode, Vehicle } from '@/types/api';
+import type { ApiEnvelope, Category, ContactMessage, LoginResult, AdminAccount, Paginated, Part, Quote, VinDecode, Vehicle } from '@/types/api';
 
 const BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1').replace(/\/$/, '');
 export const apiBaseUrl = BASE;
@@ -63,6 +63,11 @@ export const api = {
   contact: (body:Record<string,unknown>)=>request<ContactMessage>('/contact',{method:'POST',body:JSON.stringify(body)}),
   admin: {
     login:(body:{email:string;password:string})=>request<LoginResult>('/admin/auth/login',{method:'POST',body:JSON.stringify(body)}),
+    forgotPassword:(email:string)=>sameOriginRequest<{accepted:boolean;message:string}>('/api/admin/auth/forgot-password',{method:'POST',body:JSON.stringify({email})}),
+    resetPassword:(token:string,newPassword:string)=>sameOriginRequest<{reset:boolean}>('/api/admin/auth/reset-password',{method:'POST',body:JSON.stringify({token,newPassword})}),
+    account:()=>sameOriginRequest<AdminAccount>('/api/admin/account',{}),
+    changeAdminEmail:(currentPassword:string,newEmail:string)=>sameOriginRequest<AdminAccount>('/api/admin/account/email',{method:'PATCH',body:JSON.stringify({currentPassword,newEmail})}),
+    changeAdminPassword:(currentPassword:string,newPassword:string)=>sameOriginRequest<{changed:boolean}>('/api/admin/account/password',{method:'PATCH',body:JSON.stringify({currentPassword,newPassword})}),
     inventory:()=>sameOriginRequest<Part[]>('/api/admin/inventory',{}).then(normalizeAdminInventory),
     createInventory:(form:FormData)=>sameOriginRequest<Part>('/api/admin/inventory',{method:'POST',body:form}),
     updateInventory:(id:string,body:Record<string,unknown>)=>sameOriginRequest<Part>(`/api/admin/inventory/${id}`,{method:'PUT',body:JSON.stringify(body)}),

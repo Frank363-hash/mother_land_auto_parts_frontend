@@ -14,4 +14,5 @@ export type VinDecode = { vin:string; make:string|null; model:string|null; year:
 export type Quote = { id:string; referenceNumber:string; customerName:string; customerPhone:string; customerEmail:string|null; vinNumber:string|null; vehicleDetails:Record<string,unknown>|null; partsList:unknown[]; contactPreference:ContactPreference; notes:string|null; status:QuoteStatus; emailNotificationStatus:EmailNotificationStatus; emailNotificationError:string|null; createdAt:string; updatedAt:string; contactedAt:string|null; fulfilledAt:string|null; closedAt:string|null; hiddenAt:string|null; attachments:{id:string;fileName:string;mimeType:string;fileSize:number;createdAt:string}[] };
 export type ContactMessage = { id:string; name:string; email:string|null; phone:string|null; subject:string|null; message:string; status:ContactStatus; createdAt:string; updatedAt:string };
 export type AdminUser = { id:string; email:string; role:'ADMIN' };
+export type AdminAccount = AdminUser & { createdAt:string; updatedAt:string };
 export type LoginResult = { token:string; expiresIn:string; user:AdminUser };
