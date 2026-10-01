@@ -3,10 +3,28 @@ export type ContactPreference = 'WHATSAPP' | 'EMAIL' | 'PHONE_CALL';
 export type QuoteStatus = 'PENDING' | 'CONTACTED' | 'FULFILLED' | 'CLOSED';
 export type ContactStatus = 'NEW' | 'READ' | 'RESPONDED' | 'CLOSED';
 export type EmailNotificationStatus = 'PENDING' | 'SENT' | 'FAILED';
-export type Category = { id:string; name:string; slug:string; description:string|null; createdAt:string; updatedAt:string };
+export type SpecificationField = {
+  key: string;
+  label: string;
+  type: 'text' | 'number' | 'select';
+  unit?: string;
+  options?: string[];
+};
+
+export type PartSpecificationValue = string | number;
+
+export type Category = {
+  id:string;
+  name:string;
+  slug:string;
+  description:string|null;
+  specificationFields:SpecificationField[]|null;
+  createdAt:string;
+  updatedAt:string;
+};
 export type Vehicle = { id:string; make:string; model:string; yearStart:number; yearEnd:number|null; generation:string|null; notes:string|null; createdAt:string; updatedAt:string };
 export type Image = { id:string; url:string; width:number|null; height:number|null; fileSize:number|null; sortOrder:number; isPrimary:boolean; altText:string|null };
-export type Part = { id:string; title:string; sku:string; categoryId:string; conditionGrade:ConditionGrade; price:string|null; isQuoteOnly:boolean; inStock:boolean; isArchived:boolean; yardLocation:string|null; description:string|null; createdAt:string; updatedAt:string; archivedAt:string|null; category?:Category|null; vehicles?:Vehicle[]; images?:Image[] };
+export type Part = { id:string; title:string; sku:string; categoryId:string; conditionGrade:ConditionGrade; price:string|null; isQuoteOnly:boolean; inStock:boolean; isArchived:boolean; yardLocation:string|null; description:string|null; specifications:Record<string,PartSpecificationValue>|null; createdAt:string; updatedAt:string; archivedAt:string|null; category?:Category|null; vehicles?:Vehicle[]; images?:Image[] };
 export type ApiError = { code?:string; message:string; details?:unknown };
 export type ApiEnvelope<T> = { success:boolean; data:T; meta?:unknown; error?:ApiError };
 export type Paginated<T> = { data:T[]; meta:{page:number;limit:number;total:number;totalPages:number} };
