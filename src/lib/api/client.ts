@@ -1,8 +1,10 @@
 import type { ApiEnvelope, Category, ContactMessage, LoginResult, AdminAccount, Paginated, Part, Quote, VinDecode, Vehicle } from '@/types/api';
 
-const BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1').replace(/\/$/, '');
+const SERVER_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1').replace(/\/$/, '');
+const BROWSER_BASE = '/api/v1';
+const BASE = typeof window === 'undefined' ? SERVER_BASE : BROWSER_BASE;
 export const apiBaseUrl = BASE;
-export function resolveApiUrl(url:string){return /^https?:\/\//i.test(url)?url:`${BASE.replace(/\/api\/v1$/,'')}${url.startsWith('/')?url:`/${url}`}`}
+export function resolveApiUrl(url:string){if(/^https?:\/\//i.test(url))return url;const base=typeof window === 'undefined' ? SERVER_BASE : BROWSER_BASE;return `${base.replace(/\/api\/v1$/,'')}${url.startsWith('/')?url:`/${url}`}`}
 
 export class ApiClientError extends Error { code?:string; status:number; details?:unknown; constructor(message:string,status:number,code?:string,details?:unknown){super(message);this.name='ApiClientError';this.status=status;this.code=code;this.details=details;} }
 
