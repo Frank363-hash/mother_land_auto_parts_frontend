@@ -12,7 +12,7 @@ import {useLocale} from '@/components/LocaleProvider';
 
 const schema=z.object({
   customerName:z.string().min(2).max(160),
-  customerPhone:z.string().min(7).max(40),
+  customerPhone:z.string().regex(/^\+?[1-9][0-9 .()\-]{6,38}$/,'Use international format, e.g. +2348012345678'),
   customerEmail:z.string().email().optional().or(z.literal('')),
   vinNumber:z.string().regex(/^[A-Za-z0-9]{17}$/).optional().or(z.literal('')),
   contactPreference:z.enum(['WHATSAPP','EMAIL','PHONE_CALL']),
@@ -110,7 +110,7 @@ export function QuoteModal({
           </div>
         : <form onSubmit={handleSubmit(submit)} className="space-y-4 p-4 sm:p-5">
             <Field label={t('quote.name')} error={errors.customerName?.message}><input autoFocus {...register('customerName')}/></Field>
-            <Field label={t('quote.phone')} error={errors.customerPhone?.message}><input inputMode="tel" {...register('customerPhone')}/></Field>
+            <Field label={t('quote.phone')} error={errors.customerPhone?.message}><input inputMode="tel" placeholder={t('quote.phonePlaceholder')} {...register('customerPhone')}/><span className="mt-1 block text-xs text-gray-500">{t('quote.phoneHint')}</span></Field>
             <Field label={t('quote.email')} error={errors.customerEmail?.message}><input type="email" inputMode="email" {...register('customerEmail')}/></Field>
             <Field label={t('quote.vin')} error={errors.vinNumber?.message}><input maxLength={17} autoCapitalize="characters" {...register('vinNumber')}/></Field>
             <Field label={t('quote.preferred')} error={errors.contactPreference?.message}>
