@@ -5,6 +5,31 @@ import {InventoryFilters} from '@/components/InventoryFilters';
 import type {Category,Paginated,Part} from '@/types/api';
 import {getLocale} from '@/lib/locale-server';
 import {tr} from '@/lib/i18n';
+export async function generateMetadata():Promise<import('next').Metadata>{
+  const locale=await getLocale();
+  const title=locale==='es'?'Inventario de Autopartes Usadas | MotherLand Auto Parts':'Used Auto Parts Inventory | MotherLand Auto Parts';
+  const description=locale==='es'
+    ?'Explore el inventario actual de autopartes extranjeras usadas de MotherLand Auto Parts en Lithonia, Georgia.'
+    :'Browse the current used foreign auto parts inventory from MotherLand Auto Parts in Lithonia, Georgia.';
+  const path='/inventory';
+  return {
+    title,
+    description,
+    alternates:{
+      canonical:locale==='es'?'/es/inventory':path,
+      languages:{en:path,es:'/es/inventory'}
+    },
+    openGraph:{
+      title,
+      description,
+      type:'website',
+      siteName:'MotherLand Auto Parts',
+      url:locale==='es'?'/es/inventory':path
+    },
+    twitter:{card:'summary',title,description}
+  };
+}
+
 
 export const dynamic='force-dynamic';
 
