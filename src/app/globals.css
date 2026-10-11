@@ -89,3 +89,29 @@ img{max-width:100%}
 /* MotherLand brand plates preserve the original black/red logo artwork on the dark site shell. */
 .motherland-logo-plate{background:#fff}
 @media (prefers-reduced-motion: reduce){.marquee-track{animation:none!important}}
+
+/* MOTHERLAND_GOOGLE_REVIEWS_V1 */
+.google-review-deck{position:relative;height:285px;max-width:1100px;margin:0 auto}
+.google-review-card{position:absolute;left:50%;top:0;width:min(86vw,540px);min-height:255px;border:1px solid #e5e7eb;background:#fff;padding:1.25rem;color:#111827;box-shadow:0 18px 45px rgba(0,0,0,.16);transition:transform .42s ease,opacity .42s ease,filter .42s ease;transform-origin:center center}
+.google-review-card-active{opacity:1;filter:none}
+.google-review-card-side{opacity:.48;filter:saturate(.65)}
+.google-review-avatar{display:grid;height:38px;width:38px;flex:none;place-items:center;border-radius:999px;background:#111827;color:#fff;font-size:12px;font-weight:900;letter-spacing:.05em}
+.google-review-control{display:grid;height:38px;width:38px;place-items:center;border:1px solid #d1d5db;background:#fff;color:#111827;transition:transform .15s ease,background .15s ease}
+.google-review-control:hover{background:#f3f4f6;transform:translateY(-1px)}
+.google-review-dot{height:7px;width:7px;border-radius:999px;background:#6b7280;transition:width .2s ease,background .2s ease}
+.google-review-dot.is-active{width:22px;background:#d97706}
+.google-review-button{display:inline-flex;min-height:40px;align-items:center;justify-content:center;gap:.5rem;padding:0 .95rem;font-size:.8rem;font-weight:900;letter-spacing:.01em;transition:transform .15s ease,background .15s ease,border-color .15s ease}
+.google-review-button:hover{transform:translateY(-1px)}
+.google-review-button-primary{background:#d97706;color:#fff}
+.google-review-button-primary:hover{background:#b45309}
+.google-review-button-secondary{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.06);color:#fff}
+.google-review-button-secondary:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.42)}
+@media (max-width:767px){
+  .google-review-card-side{opacity:0;pointer-events:none}
+  .google-review-card{width:min(88vw,540px);min-height:270px}
+  .google-review-deck{height:300px}
+}
+@media (prefers-reduced-motion:reduce){
+  .google-review-card,.google-review-control,.google-review-dot,.google-review-button{transition:none}
+  .google-review-button:hover,.google-review-control:hover{transform:none}
+}

@@ -10,6 +10,7 @@ import {RequestButton} from '@/components/RequestButton';
 import {getLocale} from '@/lib/locale-server';
 import {tr} from '@/lib/i18n';
 import {LocalizedLink} from '@/components/LocalizedLink';
+import {GoogleReviews} from '@/components/GoogleReviews';
 
 export const revalidate=60;
 
@@ -37,6 +38,7 @@ export default async function Home(){
     <section className="mx-auto max-w-7xl px-4 py-12 md:py-16"><div className="flex flex-col justify-between gap-4 border-b border-gray-300 pb-5 sm:flex-row sm:items-end"><div><p className="text-xs font-black uppercase tracking-[.2em] text-amber-700">{t('home.arrivals')}</p><h2 className="mt-1 text-3xl font-black">{t('home.recent')}</h2></div><LocalizedLink href="/inventory" className="font-black hover:text-amber-700">{t('home.viewAll')}</LocalizedLink></div>{parts.length?<div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{parts.map(p=><PartCard key={p.id} part={p}/>)}</div>:<div className="mt-6 border border-gray-200 bg-white p-8 text-center"><p className="font-black">{t('home.loading')}</p><p className="mt-1 text-sm text-gray-600">{t('home.searchOrCall')}</p></div>}</section>
     <MotherlandMarquee/>
     <MotherlandGallery/>
+    <GoogleReviews/>
     <section className="border-y border-gray-200 bg-white"><div className="mx-auto max-w-7xl px-4 py-12 md:py-14">
       <div className="mb-6 max-w-2xl"><p className="text-xs font-black uppercase tracking-[.2em] text-amber-700">{t('home.simple')}</p><h2 className="mt-1 text-3xl font-black">{t('home.processTitle')}</h2><p className="mt-2 text-sm leading-6 text-gray-600">{t('home.processText')}</p></div>
       <div className="grid gap-6 md:grid-cols-3">
