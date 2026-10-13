@@ -38,6 +38,13 @@ async function requestPaginated<T>(path:string, init:RequestInit = {}, token?:st
   return {data:body.data,meta:body.meta as Paginated<T>['meta']};
 }
 
+export type BulkImportResult = {
+  createdCount:number;
+  skippedCount:number;
+  failedCount:number;
+  results:Array<{filename:string;status:'created'|'skipped'|'failed';partId?:string;title?:string;reason?:string}>;
+};
+
 function normalizeAdminInventory(parts:Part[]):Part[]{
   const mediaBase=BASE.replace(/\/api\/v1$/,'');
   return parts.map(part=>({
@@ -72,6 +79,7 @@ export const api = {
     changeAdminPassword:(currentPassword:string,newPassword:string)=>sameOriginRequest<{changed:boolean}>('/api/admin/account/password',{method:'PATCH',body:JSON.stringify({currentPassword,newPassword})}),
     inventory:()=>sameOriginRequest<Part[]>('/api/admin/inventory',{}).then(normalizeAdminInventory),
     createInventory:(form:FormData)=>sameOriginRequest<Part>('/api/admin/inventory',{method:'POST',body:form}),
+    bulkImportInventory:(form:FormData)=>sameOriginRequest<BulkImportResult>('/api/admin/inventory/bulk-import',{method:'POST',body:form}),
     updateInventory:(id:string,body:Record<string,unknown>)=>sameOriginRequest<Part>(`/api/admin/inventory/${id}`,{method:'PUT',body:JSON.stringify(body)}),
     archiveInventory:(id:string)=>sameOriginRequest<{id:string;archived:boolean}>(`/api/admin/inventory/${id}`,{method:'DELETE'}),
     restoreInventory:(id:string)=>sameOriginRequest<{id:string;restored:boolean;isArchived:boolean;inStock:boolean}>(`/api/admin/inventory/${id}/restore`,{method:'PATCH'}),

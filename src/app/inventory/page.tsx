@@ -38,12 +38,13 @@ export default async function InventoryPage({searchParams}:{searchParams:Promise
   const sp=await searchParams;const q=(k:string):string|undefined=>Array.isArray(sp[k])?sp[k][0]:sp[k];
   const params=new URLSearchParams();for(const k of ['year','make','model','categoryId','keyword','page','limit'])if(q(k))params.set(k,q(k)!);
   params.set('limit','10');if(!params.get('page'))params.set('page','1');
-  let result:Paginated<Part>={data:[],meta:{page:1,limit:10,total:0,totalPages:0}};let error='';
+  let result:Paginated<Part>={data:[],meta:{page:1,limit:10,total:0,totalPages:0,hasSearchableInventory:true}};let error='';
   try{result=await api.inventory.search(params)}catch(e){error=e instanceof Error?e.message:(locale==='es'?'No se pudo cargar el inventario.':'Unable to load inventory.')}
-  let categories:Category[]=[];let years:number[]=[];try{[categories,years]=await Promise.all([api.categories(),api.vehicles.years()])}catch{}
+  const showFilters=result.meta.hasSearchableInventory!==false;
+  let categories:Category[]=[];let years:number[]=[];if(showFilters){try{[categories,years]=await Promise.all([api.categories(),api.vehicles.years()])}catch{}}
   return <main className="mx-auto max-w-7xl overflow-x-hidden px-4 py-8 md:py-12">
     <div className="mb-8 motion-fade-up"><p className="text-xs font-black uppercase tracking-[.2em] text-amber-700">{t('inventory.eyebrow')}</p><h1 className="mt-1 text-4xl font-black">{t('inventory.title')}</h1><p className="mt-2 max-w-2xl text-gray-600">{t('inventory.intro')}</p></div>
-    <div className="grid min-w-0 gap-6 lg:grid-cols-[280px_1fr]"><InventoryFilters categories={categories} years={years} initial={{keyword:q('keyword'),year:q('year'),make:q('make'),model:q('model'),categoryId:q('categoryId')}}/>
+    <div className={`grid min-w-0 gap-6 ${showFilters?'lg:grid-cols-[280px_1fr]':'grid-cols-1'}`}>{showFilters&&<InventoryFilters categories={categories} years={years} initial={{keyword:q('keyword'),year:q('year'),make:q('make'),model:q('model'),categoryId:q('categoryId')}}/>}
       <section className="min-w-0">{error?<div className="border border-red-200 bg-red-50 p-5 text-red-800">{error}</div>:result.data.length?<><div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-sm"><span className="font-bold">{result.meta.total} {result.meta.total===1?t('inventory.resultOne'):t('inventory.resultMany')}</span><span>{t('inventory.page')} {result.meta.page} {locale==='es'?'de':'of'} {Math.max(result.meta.totalPages,1)}</span></div><div className="motion-stagger grid gap-5 sm:grid-cols-2 xl:grid-cols-3">{result.data.map(p=><PartCard key={p.id} part={p}/>)}</div><Pagination page={result.meta.page} totalPages={result.meta.totalPages} params={params}/></>:<EmptyInventory t={t}/>}</section>
     </div>
   </main>;

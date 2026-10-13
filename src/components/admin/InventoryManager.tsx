@@ -62,6 +62,10 @@ export function InventoryManager({archivedOnly=false}:{archivedOnly?:boolean}){
   const [,setYears]=useState<number[]>([]);
   const [selected,setSelected]=useState<Part|null>(null);
   const [imageFiles,setImageFiles]=useState<File[]>([]);
+  const [bulkFiles,setBulkFiles]=useState<File[]>([]);
+  const [bulkBusy,setBulkBusy]=useState(false);
+  const [bulkProgress,setBulkProgress]=useState('');
+  const bulkInputRef=useRef<HTMLInputElement>(null);
   const [form,setForm]=useState<FormState>({...emptyForm,specifications:{}});
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState('');
@@ -96,8 +100,8 @@ export function InventoryManager({archivedOnly=false}:{archivedOnly?:boolean}){
     setForm({
       title:part.title,
       sku:part.sku,
-      categoryId:part.categoryId,
-      conditionGrade:part.conditionGrade,
+      categoryId:part.categoryId||'',
+      conditionGrade:part.conditionGrade||'GRADE_A',
       price:part.price||'',
       isQuoteOnly:part.isQuoteOnly,
       inStock:part.inStock,
@@ -175,6 +179,32 @@ export function InventoryManager({archivedOnly=false}:{archivedOnly?:boolean}){
     }finally{
       setBusy(false);
     }
+  }
+
+  async function bulkImport(){
+    if(!bulkFiles.length){setError('Choose at least one image to import.');return;}
+    const tooLarge=bulkFiles.find(file=>file.size>8*1024*1024);
+    if(tooLarge){setError(`${tooLarge.name} is larger than 8 MB. Each image must be 8 MB or smaller.`);return;}
+    if(!confirm(`Import ${bulkFiles.length} image${bulkFiles.length===1?'':'s'} as separate image-only inventory listings? They will be marked in stock, with no category, condition, price, description, or vehicle fitment.`)) return;
+    setBulkBusy(true); setError(''); setFeedback(undefined);
+    let created=0,skipped=0,failed=0; const failures:string[]=[];
+    const chunkSize=6; const totalBatches=Math.ceil(bulkFiles.length/chunkSize);
+    try{
+      for(let offset=0;offset<bulkFiles.length;offset+=chunkSize){
+        const batch=bulkFiles.slice(offset,offset+chunkSize); const fd=new FormData();
+        batch.forEach(file=>fd.append('images',file));
+        const batchNumber=Math.floor(offset/chunkSize)+1;
+        setBulkProgress(`Uploading batch ${batchNumber} of ${totalBatches}…`);
+        const result=await api.admin.bulkImportInventory(fd);
+        created+=result.createdCount; skipped+=result.skippedCount; failed+=result.failedCount;
+        failures.push(...result.results.filter(item=>item.status==='failed').map(item=>`${item.filename}: ${item.reason||'Import failed'}`));
+      }
+      setParts(await api.admin.inventory()); setBulkFiles([]);
+      if(bulkInputRef.current) bulkInputRef.current.value='';
+      setFeedback({type:failed?'warning':'success',message:`Bulk import finished: ${created} created, ${skipped} already imported, ${failed} failed.${failures.length?` Failed files: ${failures.slice(0,3).join('; ')}${failures.length>3?'…':''}`:''}`});
+    }catch(e){
+      setError(`Bulk import stopped after ${created} created, ${skipped} already imported, and ${failed} failed. Check inventory before retrying. ${e instanceof Error?e.message:'Upload failed.'}`);
+    }finally{setBulkBusy(false);setBulkProgress('');}
   }
 
   async function manageImages(id:string){
@@ -290,6 +320,17 @@ export function InventoryManager({archivedOnly=false}:{archivedOnly?:boolean}){
       {error&&<p className="mb-4 border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
       {feedback&&<p className={`mb-4 border p-3 text-sm ${feedback.type==='warning'?'border-amber-200 bg-amber-50 text-amber-900':'border-green-200 bg-green-50 text-green-800'}`}>{feedback.message}</p>}
 
+      {!archivedOnly&&<div className="mb-5 border border-amber-200 bg-amber-50/60 p-4 sm:p-5">
+        <div className="flex items-start gap-3"><Upload size={20} className="mt-0.5 shrink-0 text-amber-700"/><div><h3 className="font-black">Bulk import inventory images</h3><p className="mt-1 text-sm leading-6 text-gray-700">Import images as separate image-only listings. They are marked in stock, with no invented category, condition, price, description, or vehicle fitment.</p></div></div>
+        <div className="mt-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
+          <label className="block text-sm font-bold">Images (JPG, PNG, WebP)
+            <input ref={bulkInputRef} type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={e=>setBulkFiles(Array.from(e.target.files||[]))} className="mt-1 min-h-11 w-full border border-gray-300 bg-white p-2 text-xs" disabled={bulkBusy}/>
+          </label>
+          <button type="button" onClick={bulkImport} disabled={bulkBusy||!bulkFiles.length} className="flex min-h-11 items-center justify-center gap-2 self-end bg-[#d97706] px-4 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"><Upload size={16}/>{bulkBusy?'Importing…':`Import ${bulkFiles.length||''} images`}</button>
+        </div>
+        <p className="mt-2 text-xs text-gray-600">{bulkFiles.length?`${bulkFiles.length} image${bulkFiles.length===1?'':'s'} selected. Each file must be 8 MB or smaller.`:'Select multiple images at once.'} {bulkProgress}</p>
+      </div>}
+
       <div className="hidden overflow-x-auto border border-gray-200 bg-white md:block">
         <table className="w-full min-w-[760px] text-left text-sm">
           <thead className="bg-gray-50 text-xs uppercase">
@@ -306,7 +347,7 @@ export function InventoryManager({archivedOnly=false}:{archivedOnly?:boolean}){
               <td className="p-3">
                 <div className="flex gap-2">
                   <button type="button" onClick={()=>setSelected(p)} className="focus-ring text-xs font-bold underline">Images</button>
-                  <button type="button" onClick={()=>startEdit(p)} className="focus-ring font-bold underline">Edit</button>
+                  {!p.isImageOnly&&<button type="button" onClick={()=>startEdit(p)} className="focus-ring font-bold underline">Edit</button>}
                   {!archivedOnly&&<button type="button" onClick={()=>archive(p.id)} className="focus-ring text-red-700" aria-label={`Archive ${p.title}`}><Archive size={16}/></button>}
                   {archivedOnly&&<>
                     <button type="button" disabled={actionBusy===`${p.id}:restore`} onClick={()=>restore(p.id,p.title)} className="focus-ring text-amber-700 font-bold disabled:opacity-50">{actionBusy===`${p.id}:restore`?'Restoring…':'Restore'}</button>
@@ -334,7 +375,7 @@ export function InventoryManager({archivedOnly=false}:{archivedOnly?:boolean}){
             <span className="shrink-0 pt-2 font-black">{p.price?`$${Number(p.price).toLocaleString()}`:'Quote'}</span>
             <div className="grid min-w-0 flex-1 grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
               <button type="button" onClick={()=>setSelected(p)} className="focus-ring min-h-10 border border-gray-300 px-3 text-xs font-bold">Images</button>
-              <button type="button" onClick={()=>startEdit(p)} className="focus-ring min-h-10 border border-gray-300 px-3 text-xs font-bold">Edit</button>
+              {!p.isImageOnly&&<button type="button" onClick={()=>startEdit(p)} className="focus-ring min-h-10 border border-gray-300 px-3 text-xs font-bold">Edit</button>}
               {!archivedOnly&&<button type="button" onClick={()=>archive(p.id)} className="focus-ring grid min-h-10 min-w-10 place-items-center border border-red-200 text-red-700" aria-label={`Archive ${p.title}`}><Archive size={16}/></button>}
               {archivedOnly&&<>
                 <button type="button" disabled={actionBusy===`${p.id}:restore`} onClick={()=>restore(p.id,p.title)} className="focus-ring min-h-10 border border-amber-200 px-3 text-xs font-bold text-amber-700 disabled:opacity-50">{actionBusy===`${p.id}:restore`?'Restoring…':'Restore'}</button>
