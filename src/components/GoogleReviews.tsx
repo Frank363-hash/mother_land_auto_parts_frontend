@@ -8,22 +8,21 @@ type Review={
   name:string;
   rating:1|2|3|4|5;
   text?:string;
+  date?:string;
 };
 
 // Source: customer reviews visibly shown in the Google Business Profile screenshots
 // supplied for this patch. Text is reproduced only where readable in the screenshots.
 // Truncated Google text remains truncated rather than being completed or invented.
 const REVIEWS:Review[]=[
-  {name:'Beneyam Nadew',rating:5,text:'Great service & great price for used parts.'},
-  {name:'Jorge Fernandez',rating:5,text:'Good engine and quality'},
-  {name:'alem gezah egn',rating:5,text:"This people have Toyota's & Honda's parts."},
-  {name:'Evaristus muh Ngong',rating:5},
-  {name:'Tameratdagne2@gmail.com Dagne',rating:5},
-  {name:'Gbemisola Owolweselu',rating:5},
-  {name:'Michael Osho',rating:5},
-  {name:'Miss B',rating:4,text:'Interesting concept map nice people (I was there briefly)'},
-  {name:'M H',rating:1,text:"Don't waste your time or money doing business with Roy Metu or Motherland Auto Parts. Seriously overpriced. They want..."},
-  {name:'jay_yee',rating:1,text:'Sold me 2 doors for $800, did not includ all the parts, when I call the next day for the parts they tried selling me. Very skeevy shady business.'},
+  {name:'Beneyam Nadew',rating:5,date:'2025',text:'Great service & great price for used parts.'},
+  {name:'Jorge Fernandez',rating:5,date:'2024',text:'Good engine and quality'},
+  {name:'alem gezah egn',rating:5,date:'2021',text:"This people have Toyota's & Honda's parts."},
+  {name:'Evaristus muh Ngong',rating:5,date:'2026'},
+  {name:'Tameratdagne2@gmail.com Dagne',rating:5,date:'2026'},
+  {name:'Gbemisola Owolweselu',rating:5,date:'2021'},
+  {name:'Dale Kirksey',rating:5,date:'2023',text:'Best prices on use parts'},
+  {name:'Owolabi Sholotan',rating:5,date:'2021',text:'This guys always got my back when it comes to parts, they are good at what they do.'},
 ];
 
 const READ_REVIEWS_URL='https://www.google.com/search?q=motherland+auto+parts';
@@ -105,7 +104,7 @@ export function GoogleReviews(){
                   <div className="google-review-avatar" aria-hidden="true">{initials(review.name)}</div>
                   <div className="min-w-0">
                     <p className="truncate text-sm font-black text-gray-900">{review.name}</p>
-                    <p className="mt-0.5 text-[11px] font-bold uppercase tracking-[.12em] text-gray-500">{labels.google}</p>
+                    <p className="mt-0.5 text-[11px] font-bold uppercase tracking-[.12em] text-gray-500">{labels.google}{review.date?` · ${review.date}`:''}</p>
                   </div>
                 </div>
                 <Quote size={20} className="shrink-0 text-amber-500" aria-hidden="true"/>
